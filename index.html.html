@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Cielo estrellado */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Pregunta */
+        .question {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+        }
+
+        /* Opciones de fases lunares */
+        .moon-phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .moon-option {
+            background: rgba(147, 51, 234, 0.1);
+            border: 2px solid #9333ea;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .moon-option:hover {
+            background: rgba(147, 51, 234, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+        }
+
+        .moon-emoji {
+            font-size: 70px;
+            display: block;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .moon-option p {
+            font-size: 14px;
+            color: #fff;
+        }
+
+        /* Mensajes de feedback */
+        .message-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .message-overlay.show {
+            display: flex;
+        }
+
+        .message-text {
+            font-size: 60px;
+            font-weight: bold;
+            text-align: center;
+            animation: pulse 1s ease;
+        }
+
+        .message-text.correct {
+            color: #9333ea;
+            text-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+        }
+
+        .message-text.incorrect {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Mensaje inspirador */
+        .inspiration-message {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .inspiration-message h2 {
+            font-size: 22px;
+            line-height: 1.6;
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #9333ea, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(147, 51, 234, 0.6);
+        }
+
+        /* Contenedor de video */
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(147, 51, 234, 0.1);
+            border: 2px solid #9333ea;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.3);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            margin-bottom: 15px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-control {
+            background: #9333ea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-control:hover {
+            background: #7c3aed;
+            transform: scale(1.05);
+        }
+
+        /* Download prompt */
+        .download-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(147, 51, 234, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            display: none;
+            animation: slideIn 0.5s ease;
+            z-index: 1001;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .download-prompt.show {
+            display: block;
+        }
+
+        .download-prompt p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .question {
+                font-size: 18px;
+            }
+
+            .moon-phases {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .moon-emoji {
+                font-size: 50px;
+            }
+
+            .message-text {
+                font-size: 40px;
+            }
+
+            .inspiration-message h2 {
+                font-size: 18px;
+            }
+
+            .btn-primary {
+                font-size: 18px;
+                padding: 12px 30px;
+            }
+
+            .download-prompt {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cielo estrellado -->
+    <div id="starfield"></div>
+
+    <!-- Overlay de mensajes -->
+    <div class="message-overlay" id="messageOverlay">
+        <div class="message-text" id="messageText"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Quiz Section -->
+        <div id="quizSection">
+            <h1 class="question">¿En qué fase estaba la Luna hace exactamente 17 años?</h1>
+            
+            <div class="moon-phases" id="moonPhases">
+                <!-- Las opciones se generarán con JavaScript -->
+            </div>
+        </div>
+
+        <!-- Mensaje inspirador -->
+        <div id="inspirationSection" class="inspiration-message hidden">
+            <h2>Lo siguiente está inspirado en ti, en cómo me haces sentir. Espero que te guste, mi señorita, mi estrella fugaz.</h2>
+            <button class="btn-primary" onclick="showVideo()">For you</button>
+        </div>
+
+        <!-- Video Section -->
+        <div id="videoSection" class="video-container hidden">
+            <div class="video-wrapper">
+                <iframe 
+                    src="https://drive.google.com/file/d/1c8PMA7cjqkDND-8_yiewpIvxM44WE7ZY/preview" 
+                    allow="autoplay"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="video-controls">
+                <button class="btn-control" onclick="downloadVideo()">Descargar video</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download prompt -->
+    <div class="download-prompt" id="downloadPrompt">
+        <p>¿Quieres descargar la letra del poema?</p>
+        <button class="btn-primary" onclick="downloadImages()">Sí</button>
+    </div>
+
+    <script>
+        // Crear estrellas
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            const numberOfStars = 200;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                starfield.appendChild(star);
+            }
+        }
+
+        // Fases lunares con emojis Unicode
+        const moonPhases = [
+            { name: 'Luna Nueva', emoji: '🌑', correct: false },
+            { name: 'Luna Creciente', emoji: '🌒', correct: false },
+            { name: 'Cuarto Creciente', emoji: '🌓', correct: false },
+            { name: 'Luna Gibosa Creciente', emoji: '🌔', correct: true },
+            { name: 'Luna Llena', emoji: '🌕', correct: false },
+            { name: 'Luna Gibosa Menguante', emoji: '🌖', correct: false },
+            { name: 'Cuarto Menguante', emoji: '🌗', correct: false },
+            { name: 'Luna Menguante', emoji: '🌘', correct: false }
+        ];
+
+        // Renderizar opciones
+        function renderMoonPhases() {
+            const container = document.getElementById('moonPhases');
+            moonPhases.forEach((phase, index) => {
+                const option = document.createElement('div');
+                option.className = 'moon-option';
+                option.onclick = () => checkAnswer(phase.correct);
+                option.innerHTML = `
+                    <span class="moon-emoji">${phase.emoji}</span>
+                    <p>${phase.name}</p>
+                `;
+                container.appendChild(option);
+            });
+        }
+
+        // Mostrar mensaje
+        function showMessage(text, isCorrect) {
+            const overlay = document.getElementById('messageOverlay');
+            const messageText = document.getElementById('messageText');
+            
+            messageText.textContent = text;
+            messageText.className = 'message-text ' + (isCorrect ? 'correct' : 'incorrect');
+            overlay.classList.add('show');
+            
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                if (isCorrect) {
+                    setTimeout(() => showInspiration(), 300);
+                }
+            }, 3000);
+        }
+
+        // Verificar respuesta
+        function checkAnswer(isCorrect) {
+            if (isCorrect) {
+                showMessage('Correcto', true);
+            } else {
+                showMessage('Incorrecto', false);
+            }
+        }
+
+        // Mostrar mensaje inspirador
+        function showInspiration() {
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('inspirationSection').classList.remove('hidden');
+        }
+
+        // Mostrar video y configurar evento para mostrar prompt de descarga
+        function showVideo() {
+            document.getElementById('inspirationSection').classList.add('hidden');
+            document.getElementById('videoSection').classList.remove('hidden');
+            
+            // Mostrar el prompt de descarga después de 30 segundos (ajusta según duración del video)
+            // Como no podemos detectar el fin del video en iframe, usamos un timeout estimado
+            // Si tu video dura menos o más, cambia el valor: 30000 = 30 segundos
+            setTimeout(() => {
+                document.getElementById('downloadPrompt').classList.add('show');
+            }, 75000); // Ajusta este valor a la duración de tu video en milisegundos
+        }
+
+        // Descargar video
+        function downloadVideo() {
+            const videoUrl = 'https://drive.google.com/uc?export=download&id=1c8PMA7cjqkDND-8_yiewpIvxM44WE7ZY';
+            const a = document.createElement('a');
+            a.href = videoUrl;
+            a.download = 'Para_ti.mp4';
+            a.target = '_blank';
+            a.click();
+        }
+
+        // Descargar imágenes
+        function downloadImages() {
+            const images = [
+                'https://drive.google.com/uc?export=download&id=1q8j5prvFTCRvqKXxupmHQ8gqs1I3aPVJ',
+                'https://drive.google.com/uc?export=download&id=1ULgJGOeIEM2gMd0M0L0hu5l2nBtrp84w'
+            ];
+            
+            images.forEach((url, index) => {
+                setTimeout(() => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Letra_poema_${index + 1}.png`;
+                    a.target = '_blank';
+                    a.click();
+                }, index * 1000); // 1 segundo entre cada descarga
+            });
+        }
+
+        // Inicializar
+        createStars();
+        renderMoonPhases();
+    </script>
+</body>
+</html>
